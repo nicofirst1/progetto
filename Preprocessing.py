@@ -11,8 +11,8 @@ TEST_PATH = "/Users/nicolo/PycharmProjects/progetto1/testData.tsv"
 TRAIN_PATH = "/Users/nicolo/PycharmProjects/progetto1/labeledTrainData.tsv"
 
 # salvo i dati in formato dataframe
-TEST_DATASET = pd.DataFrame.from_csv(TEST_PATH, sep='\t')
-TRAIN_DATASET = pd.DataFrame.from_csv(TRAIN_PATH, sep='\t')
+TEST_DATASET = pd.read_csv(TEST_PATH, header=0, sep="\t", quoting=3)
+TRAIN_DATASET = pd.read_csv(TRAIN_PATH, header=0, sep="\t", quoting=3)
 
 DEBUG = False
 
@@ -82,7 +82,7 @@ def prova2(words_lst, res_lst):
     #inizzializzo un CountVectorize che usa il prpincipio della bag of words per trasformare tutte le frasi del dataset
     #  in un datased multidimansionale dove ongi parola è rappresentata da un  valore numerico che indica le ripetizioni
     #  della stessa ll'interno della frase
-    vect=CountVectorizer(analyzer = "word")
+    vect=CountVectorizer(analyzer = "word", max_features = 10000)
 
     X_train=vect.fit_transform(words_lst).toarray()
     print("end vect")
@@ -94,7 +94,7 @@ def prova2(words_lst, res_lst):
         print(sorted(vocab, key=lambda elem: len(elem)))
 
     #inizzializzo l'estimatore e inizio il fittaggio
-    forest = RandomForestClassifier(n_estimators=100,n_jobs=-1)
+    forest = RandomForestClassifier(n_estimators=300,n_jobs=-1, verbose=1, criterion="entropy",oob_score=True)
     forest=forest.fit(X_train,res_lst)
     print("end fit")
 
@@ -113,7 +113,7 @@ def prova2(words_lst, res_lst):
 
     #salvo i risultati in un dataframe e li trasformo in csv
     to_save=pd.DataFrame(data={"id":TEST_DATASET["id"],"sentiment":pred})
-    to_save.to_csv(path_or_buf="/Users/nicolo/PycharmProjects/progetto1/pred.csv")
+    to_save.to_csv("pred.csv", index=False, quoting=3 )
 
 
 
