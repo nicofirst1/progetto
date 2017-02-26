@@ -94,7 +94,7 @@ def prova2(words_lst, res_lst):
         print(sorted(vocab, key=lambda elem: len(elem)))
 
     #inizzializzo l'estimatore e inizio il fittaggio
-    forest = RandomForestClassifier(n_estimators=300,n_jobs=-1, verbose=1, criterion="entropy",oob_score=True)
+    forest = RandomForestClassifier(n_estimators=300,n_jobs=-1, verbose=1, criterion="entropy")
     forest=forest.fit(X_train,res_lst)
     print("end fit")
 
