@@ -75,45 +75,37 @@ def prova1(words_lst, res_lst):
     forest = RandomForestClassifier(n_estimators=100)
     forest.fit(sparse, res_lst)
 
-def prova2(words_lst, res_lst):
-    print("start prova2")
+def string2vecCV(x_train_str ,x_test_str=None):
+    """preso in input due Series (vettori) usa il principio della bag of word per creare un dizionario con le parole del
+    train set e lo trasforma. In seguito trasforma anche il test set (se passato) e ritorna una tupla in cui il primo
+    elemento è il train set vettorializzato e il secondo (sempre se presente) è il test set vettorializzato"""
 
+
+    # pulisco l'x_test
+    clean_x_train=word_polishing(list(x_train_str))
 
     #inizzializzo un CountVectorize che usa il prpincipio della bag of words per trasformare tutte le frasi del dataset
     #  in un datased multidimansionale dove ongi parola è rappresentata da un  valore numerico che indica le ripetizioni
     #  della stessa ll'interno della frase
     vect=CountVectorizer(analyzer = "word", max_features = 10000)
-
-    X_train=vect.fit_transform(words_lst).toarray()
-    print("end vect")
+    x_train_vec=vect.fit_transform(clean_x_train).toarray()
 
 
     if DEBUG:
-        print(X_train.shape)
+        print(x_train_vec.shape)
         vocab = vect.get_feature_names()
         print(sorted(vocab, key=lambda elem: len(elem)))
 
-    #inizzializzo l'estimatore e inizio il fittaggio
-    forest = RandomForestClassifier(n_estimators=300,n_jobs=-1, verbose=1, criterion="entropy")
-    forest=forest.fit(X_train,res_lst)
-    print("end fit")
+    # se è presente il test set allora lo pulisco, lo trasformo e ritorno la tupla completa
+    if x_test_str:
+        clean_x_test=word_polishing(list(x_test_str))
+        x_test_vec=vect.transform(clean_x_test)
+        return x_train_vec, x_test_vec
+    else: #altrimenti ritporno solo il test set nella tupla
+        return x_train_vec, None
 
 
-    # uso lo stesso principio di prima per trasformare (solo trasformare) il train dataset
-    #  in un vettore multidimensionale con lo STESSO CountVectorizer, prima devo pulirlo
 
-    clean_test=word_polishing(list(TEST_DATASET["review"]))
-    clean_vect_test=vect.transform(clean_test).toarray()
-    print("end vect2")
-
-
-    #adesso posso provare a fare la predizione
-    pred=forest.predict(clean_vect_test)
-    print("end pred")
-
-    #salvo i risultati in un dataframe e li trasformo in csv
-    to_save=pd.DataFrame(data={"id":TEST_DATASET["id"],"sentiment":pred})
-    to_save.to_csv("pred.csv", index=False, quoting=3 )
 
 
 
