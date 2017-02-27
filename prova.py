@@ -1,6 +1,6 @@
-import gensim
+from Data_analisys import *
+from Processing import *
 
-from Preprocessing import *
+pricipal_component(TRAIN_DATASET)
 
-lst=word_polishing(list(TRAIN_DATASET["review"]))
-forest(lst,list(TRAIN_DATASET["sentiment"]))
+#forest(TRAIN_DATASET,TEST_DATASET)
