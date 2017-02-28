@@ -1,7 +1,11 @@
+import os
+
 import pandas as pd
-import scipy
+import pickle
+import time
 from gensim.scripts import word2vec_standalone
 from scipy.sparse import csr_matrix
+from sklearn.cluster import KMeans
 from sklearn.ensemble import RandomForestClassifier
 from gensim import corpora
 from gensim.models import Word2Vec
@@ -92,16 +96,63 @@ def string2vecCV(x_train_str ,x_test_str=None, max_features=10000):
 
 
 
-def word2vec(x_train_str,x_test_str=None):
+def cluster_dict_syn(word_for_cluster=100):
+    """questa funzioen prende in input un parametro facoltativo e fa le seguenti operazioni:
+    carica il modello word2vec di google (opportunamente ottimizzato) su cui è stato effettuato un train con 3 milioni di parole;
+    divide le parole in cluster per similitudine semantica, tramite un analisi a k-means (il numero di parole per cluster
+     è dettato dal parametro facoltativo);
+     ritorna un dizionario in cui ogni parola è associata ad un indice di cluster
+    """
+
+    # se il dizionario è gia stato creato e salvato allora ritorno quello, altrimenti procedo con l'esecuzione
+    pickle_name="kmeans"+str(word_for_cluster)+".pickle"
+
+    if(pickle_name in os.listdir("/k-means/")):
+        with open("/k-means/"+pickle_name) as file:
+            dictionary=pickle.load(file)
+            return dictionary
 
 
-    # prima di tutto eseguo la pulizia delle frasi e poi delle parole, dato che l'estimatore Word2Vec riceve in input
-    # una lista di liste di prole che rappresentano una frase
+    print("Inizio caricamento modello word2vec...")
+    #carico il modello pre-trained di google (il modello Faster l'ho creato apposta per la velocità usando la funzione
+    # init_sims(replace=True)che sfrutta la memria RAM)
+    model = Word2Vec.load('Faster', mmap='r')
+    model.syn0norm = model.syn0
 
-    clean_x_train_words=word_polishing_division(sentences_polishing(x_train_str))
-    clean_x_test_words=word_polishing_division(sentences_polishing(x_test_str))
+    #per collegare questo modello all'esercizio mi devo suddividere le parole per similarità semantica, faccio questo
+    # tramite un semplice clustering di parole. Per trovare i vari centroidi dei cluster semantici uso il k-mean fornito
+    # da sklearn
 
-    model=Word2Vec(clean_x_train_words, min_count=10, workers=-1)
+    word_vect=model.syn0
+
+    #devo decidere le dimensioni del km, ovvero quante parole sono presenti in un cluster, per ora mi tengo sulle 100 parole
+
+    cluster_word_num=int(word_vect.shape[0]/word_for_cluster)
+
+    #prendo il tempo impiegto dal km (solo per ragioni di speedup)
+    start = time.time()
+    print("Inizio fittaggio del k-mean...")
+
+    #creo il km con il massimo della parallelizzazione e procedo nel fittaggio con predizione
+    km=KMeans(n_clusters=cluster_word_num, n_jobs=-1, verbose=1)
+    # cluster_index sara un vettore di indici relativi ai cluster
+    cluster_index=km.fit_predict(word_vect)
+
+    end=time.time()
+    print("Il km ha impiegato "+(end-start)+ " secondi")
+
+    # creo un dizionario in cui ogni parola è associata ad un cluster
+    dictionary=dict(zip(model.index2word,cluster_index))
+    print("Fine creazione dizionario")
+
+    # per motivi di convenienza salvo il dizionario usando pickle
+    with open("/k-means"+pickle_name,'wb') as file:
+        pickle.dump(dictionary,file,protocol=pickle.HIGHEST_PROTOCOL)
+
+    return dictionary
+
+
+
 
 
 
