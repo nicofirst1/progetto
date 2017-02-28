@@ -25,7 +25,7 @@ def forest_grid(train_dataset, test_dataset):
     # tf_transformer = TfidfTransformer(use_idf=False).fit(x_train)
     # train_tf = tf_transformer.transform(x_train)
 
-    grid = GridSearchCV(RandomForestClassifier, param_grid, n_jobs=-1, verbose=True)
+    grid = GridSearchCV(RandomForestClassifier(), param_grid, n_jobs=-1, verbose=True)
     grid.fit(x_train, y_train)
     print(grid.best_estimator_)
     print(grid.best_score_)
