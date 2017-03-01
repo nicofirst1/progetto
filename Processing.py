@@ -15,32 +15,33 @@ from Preprocessing import  TEST_DATASET, string2vecCV, TRAIN_DATASET
 
 def semantic_cluster_assignment(cluster_dictionary):
 
-    #prima di tutto prendo le recensioni e le pulisco dai tah html e dalla punteggiatura
-    review_lst=list(TRAIN_DATASET["review"])
-    review_lst=[strip_tags(x) for x in  review_lst]
-    review_lst=[strip_punctuation2(x) for x in  review_lst]
+    # prima di tutto prendo le recensioni e le pulisco dai tah html e dalla punteggiatura
+
+    review_lst = list(TRAIN_DATASET["review"])
+    review_lst = [strip_tags(x) for x in review_lst]
+    review_lst = [strip_punctuation2(x) for x in review_lst]
 
     print("Creazione dataset vuoto")
+
     # adesso creo un dataframe vuoto con review_lst.lenght righe
-    index=range(0,len(review_lst)+1)
-    new_dataset=pd.DataFrame(index=index)
+
+    index = range(0,len(review_lst)+1)
+    new_dataset = pd.DataFrame(index=index)
 
     print("Inizio iterazione sul dataset")
     for sentence in review_lst:
         new_dataset.append(auxiliary(sentence,cluster_dictionary))
 
 
-def auxiliary(sentence,dictionary):
+def auxiliary(sentence, dictionary):
 
     # splitto la frase separando le parole
-    word_lst=sentence.tolower().split()
+    word_lst = sentence.tolower().split()
 
-    #prealloco un array di zeri per ottimizzare il procedimento, questo array avra dimensione pari al numero dei cluster
-    #  e sarà una riga del mio dataset composta dai vari labels
-    array=np.zeros(dictionary)
-
-
-
+    # prealloco un array di zeri per ottimizzare il procedimento,
+    # questo array avra dimensione pari al numero dei cluster
+    # e sarà una riga del mio dataset composta dai vari labels
+    array = np.zeros(dictionary)
 
 
 def forest_classifier(train_dataset, test_dataset):
