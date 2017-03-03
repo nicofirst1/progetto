@@ -1,19 +1,30 @@
-from sklearn.decomposition import PCA
 import numpy as np
+from scipy.stats import stats
+
 from Preprocessing import *
+import matplotlib.pyplot as plt
+
+
 
 
 def scoring(prediction):
     return np.mean(prediction == TEST_DATASET["sentiment"])
 
 
-def pricipal_component(dataset):
+def plot_chi2(xtrain_vec, ytrain_vec, xtrain_str):
 
-    clean_x_train = sentences_polishing(list(dataset["review"]))
+    plt.figure(figsize=(6, 6))
+    wscores = zip(xtrain_str, chi2(xtrain_vec,ytrain_vec)[0])
+    wchi2 = sorted(wscores, key=lambda x: x[1])
+    topchi2 = wchi2[-25:]
+    x = range(len(topchi2[1]))
+    labels = topchi2[0]
+    plt.barh(x, topchi2[1], align='center', alpha=.2, color='g')
+    plt.plot(topchi2[1], x, '-o', markersize=2, alpha=.8, color='g')
+    plt.yticks(x, labels)
+    plt.xlabel('$\chi^2$')
+    plt.show()
 
-    x_train_vec = string2vecCV(clean_x_train, max_features=len(clean_x_train))[0]
 
-    pca = PCA(n_components=min(TRAIN_DATASET.shape[0], TRAIN_DATASET.shape[1]))
-    xtrain = pca.fit_transform(x_train_vec)
 
-    print(xtrain.shape)
+
