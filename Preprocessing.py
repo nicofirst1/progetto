@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import time
 from gensim.parsing.preprocessing import remove_stopwords, strip_punctuation2, strip_non_alphanum, strip_tags
@@ -5,9 +7,9 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
 
-TEST_PATH = "/Users/nicolo/PycharmProjects/progetto1/datasets/testDataLabeled.tsv"
-TRAIN_PATH_LABLED = "/Users/nicolo/PycharmProjects/progetto1/datasets/labeledTrainData.tsv"
-TRAIN_PATH_UNLABLED="/Users/nicolo/PycharmProjects/progetto1/datasets/unlabeledTrainData.tsv"
+TEST_PATH = os.getcwd().rsplit("/",maxsplit=1)[0]+"/datasets/testDataLabeled.tsv"
+TRAIN_PATH_LABLED = os.getcwd().rsplit("/",maxsplit=1)[0]+"/datasets/labeledTrainData.tsv"
+TRAIN_PATH_UNLABLED=os.getcwd().rsplit("/",maxsplit=1)[0]+"/datasets/unlabeledTrainData.tsv"
 # salvo i dati in formato dataframe
 TEST_DATASET = pd.read_csv(TEST_PATH, header=0, sep="\t", quoting=3)
 del TEST_DATASET["Unnamed: 0"]
