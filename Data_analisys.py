@@ -14,18 +14,55 @@ def plot_chi2(xtrain_vec, ytrain_vec, xtrain_str):
     end=time.time()
     print("tempo impiegato: "+str(end-start)+" secodni")
 
+def plot_top_n_words(trans, n, reverse=True):
+    """Questa funzione prende in input 3 parametri, un trasformatore, un intero (si consiglia sotto i 50) e un boolean.
+    La sua funzione è quella di plottare le n parole con punteggio piu altro (o piu basso dipende da reverse)"""
+
+    # prendo le parole e i valori associati
+    idf = trans.idf_
+    features=trans.get_feature_names()
+
+
+    # creo un dizionario
+    d=dict(zip(features, idf))
+    #scelgo solo le 100 parole con il punteggio migliore
+    sort=sorted(d.items(),key=operator.itemgetter(1),reverse=reverse)[:n]
+    # le ritrasformo in dizionario per essere plottate
+    d=dict(sort)
+
+    #calcolo la media dei valori
+    mean=0
+    for elem in d.values():
+        mean+=elem
+
+    mean/=len(d)
+
+
+
+    plt.figure()
+    #scelgo il titolo piu opportuno
+    if(reverse): plt.title("Top "+str(n)+" features")
+    else:  plt.title("Worst "+str(n)+" features")
+
+    # plotto i dati
+    plt.bar(range(len(d)), d.values(), align='center')
+    plt.xticks(range(len(d)), d.keys(), rotation=90,y=0.5, color="white")
+
+    #plotto la media
+    plt.axhline(y=mean, c="red")
+    plt.text(0,mean,"mean: "+str(mean),color="red",size="large")
+
+    plt.show()
+
 
 def plot_vector(trans):
+    """Questa funzione prende in input un trasformatore( TFIDF o countVectorize), ne estrae i valori e li plotta
+    dividento le ordinate in n parti, con n preso tra minimo e massimo tra i valori presenti. Inoltre stampe le parole
+     presenti in ogni range di n valori"""
 
     # prendo i valori di tutte le parole
     idf=trans.idf_
 
-    # # creo un dizionario
-    # d=dict(zip(features, idf))
-    # #scelgo solo le 100 parole con il punteggio migliore
-    # sort=sorted(d.items(),key=operator.itemgetter(1),reverse=True)[:50]
-    # # le ritrasformo in dizionario per essere plottate
-    # d=dict(sort)
 
     # sorto i valori e creo una lista di tuple dove il primo elemnto è l'indice e il secondo il valore
     sort=sorted(idf)

@@ -1,4 +1,4 @@
-from Data_analisys import plot_vector
+from Data_analisys import plot_vector, plot_top_n_words
 from Preprocessing import TRAIN_DATASET_LABLED, TRAIN_DATASET_UNLABLED, TEST_DATASET
 from Processing import string2vecTFIDF
 from util import *
@@ -6,7 +6,7 @@ from util import *
 
 x_train_vec, x_test_vec,vect=string2vecTFIDF(TRAIN_DATASET_LABLED["review"],TRAIN_DATASET_UNLABLED["review"],TEST_DATASET["review"])
 
-plot_vector(vect)
+plot_top_n_words(vect, 10,reverse=False)
 
 
 #
