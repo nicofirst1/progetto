@@ -1,5 +1,4 @@
 import os
-
 import pandas as pd
 import time
 from gensim.parsing.preprocessing import remove_stopwords, strip_punctuation2, strip_non_alphanum, strip_tags
@@ -7,6 +6,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
 
+#apertura e aslvataggio dei vari datasets
 TEST_PATH = os.getcwd()+"/datasets/testDataLabeled.tsv"
 TRAIN_PATH_LABLED = os.getcwd()+"/datasets/labeledTrainData.tsv"
 TRAIN_PATH_UNLABLED=os.getcwd()+"/datasets/unlabeledTrainData.tsv"
@@ -17,7 +17,6 @@ TRAIN_DATASET_LABLED = pd.read_csv(TRAIN_PATH_LABLED, header=0, sep="\t", quotin
 TRAIN_DATASET_UNLABLED = pd.read_csv(TRAIN_PATH_UNLABLED, header=0, sep="\t", quoting=3)
 
 
-DEBUG = False
 
 
 def sentences_polishing(words_lst):
@@ -74,11 +73,6 @@ def string2vecCV(x_train_str, x_test_str=None, max_features=20000):
     vect = CountVectorizer(analyzer="word", max_features=max_features)
     x_train_vec = vect.fit_transform(clean_x_train).toarray()
 
-    if DEBUG:
-        print(x_train_vec.shape)
-        vocab = vect.get_feature_names()
-        print(sorted(vocab, key=lambda elem: len(elem)))
-
     # se è presente il test set allora lo pulisco, lo trasformo e ritorno la tupla completa
     if x_test_str is not None:
         clean_x_test = sentences_polishing(list(x_test_str))
@@ -100,7 +94,7 @@ def string2vecTFIDF(x_train_str_labled,x_train_str_unlabled, x_test_str):
     # inizzializzo un CountVectorize che usa il prpincipio della bag of words per trasformare tutte le frasi del dataset
     #  in un datased multidimansionale dove ongi parola è rappresentata da un  valore numerico che indica le ripetizioni
     #  della stessa ll'interno della frase
-    vect = TfidfVectorizer(min_df=2,max_df=0.96,sublinear_tf = True,max_features = 200000)
+    vect = TfidfVectorizer(min_df=2,max_df=0.96,sublinear_tf = True,max_features = 200000,strip_accents="ascii")
     vect = vect.fit(clean_x_trainL+clean_x_trainU)
     x_train_vec=vect.transform(clean_x_trainL).toarray()
     print("xtrain trasformato")
@@ -109,12 +103,10 @@ def string2vecTFIDF(x_train_str_labled,x_train_str_unlabled, x_test_str):
     clean_x_test = sentences_polishing(list(x_test_str))
     x_test_vec = vect.transform(clean_x_test)
 
-    x_train_str=vect.inverse_transform(x_train_vec)
-
     end = time.time()
 
-    print("pulizia e trasformazione dell'xtest avvenuta\n tempo impiegato: "+str(end-start)+" secodni\n")
-    return x_train_vec, x_test_vec, x_train_str
+    print("pulizia e trasformazione dell'xtest avvenuta\n tempo impiegato: "+str(end-start)+" secondi\n")
+    return x_train_vec, x_test_vec, vect
 
 def dimensionality_reductionKB(xtrain,ytrain, xtest, percentage=0.9):
 
