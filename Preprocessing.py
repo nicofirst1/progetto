@@ -21,8 +21,6 @@ TRAIN_DATASET_UNLABLED = pd.read_csv(TRAIN_PATH_UNLABLED, header=0, sep="\t", qu
 
 def sentences_polishing(words_lst):
 
-
-
     # elimino i tag html
     words_lst = [strip_tags(x) for x in words_lst]
 
@@ -39,22 +37,6 @@ def sentences_polishing(words_lst):
     words_lst = [x for x in words_lst if x]
 
     # con questa pulizia del dataset sono passato da 156060 elementi a 102355
-
-    return words_lst
-
-
-def word_polishing_division(sentence_lst):
-
-    # # creo una lista di liste che conterranno ogni parola, portanto le parole in minuscolo,
-    # # adesso words_lst ha un'aspetto del tipo: [['il','cane','abbaia'],['il','gatto','miagola']],
-    # # dove ongi parola di una frase è un elemento di una list ache va a comporre una lista di frasi
-    words_lst = [x.lower().split() for x in sentence_lst]
-
-    # elimino le parole con lunghezza minore di 3
-    for elem in words_lst:
-        for word in elem:
-            if len(word) < 3:
-                elem.remove(word)
 
     return words_lst
 
