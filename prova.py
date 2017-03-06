@@ -1,6 +1,5 @@
-from Data_analisys import plot_vector, plot_top_n_words, plot_chi2
-from Preprocessing import TRAIN_DATASET_LABLED, TRAIN_DATASET_UNLABLED, TEST_DATASET
-from Processing import string2vecTFIDF, forest_classifier
+from Preprocessing import TRAIN_DATASET_LABLED, TRAIN_DATASET_UNLABLED
+from Processing import  forest_classifier, naive_bayes, SGD_classifier
 from util import *
 
 
@@ -10,5 +9,6 @@ from util import *
 
 
 #
-forest_classifier(TRAIN_DATASET_LABLED,TRAIN_DATASET_UNLABLED,TEST_DATASET)
-# SGD_classifier(TRAIN_DATASET_LABLED,TRAIN_DATASET_UNLABLED,TEST_DATASET)
+#forest_classifier(TRAIN_DATASET_LABLED,TRAIN_DATASET_UNLABLED,TEST_DATASET)
+SGD_classifier(TRAIN_DATASET_LABLED,TRAIN_DATASET_UNLABLED,TEST_DATASET)
+naive_bayes(TRAIN_DATASET_LABLED,TEST_DATASET)

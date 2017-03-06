@@ -1,13 +1,10 @@
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import SGDClassifier
-
-from sklearn.naive_bayes import *
 from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.linear_model import SGDClassifier
+from sklearn.naive_bayes import *
 
-from Data_analisys import plot_top_forest_features_importance
+from Preprocessing import string2vecCV
 from util import scoring, polish_tfidf_kbest
-
-from Preprocessing import string2vecCV, string2vecTFIDF, dimensionality_reductionKB
 
 TO_PLOT=True
 
@@ -15,17 +12,13 @@ TO_PLOT=True
 def forest_classifier(train_set_labled,train_set_unlabled,test_set):
 
     #tratto i dati
-    xtrain_vec, xtest_vec,ytrain, vect=polish_tfidf_kbest(train_set_labled,train_set_unlabled,test_set)
+    xtrain_vec, xtest_vec,ytrain=polish_tfidf_kbest(train_set_labled,train_set_unlabled,test_set)
 
     print("inizio classificazione......")
 
     # inizzializzo il classificatore e inizio il fittaggio
     forest = RandomForestClassifier(n_estimators=300, n_jobs=-1, verbose=1, criterion="entropy")
     forest = forest.fit(xtrain_vec, ytrain)
-
-    if(TO_PLOT):
-        features = vect.inverse_transform(xtrain_vec)
-        plot_top_forest_features_importance(forest,features,20)
 
 
     # adesso posso provare a fare la predizione
