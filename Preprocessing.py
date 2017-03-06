@@ -90,7 +90,7 @@ def string2vecTFIDF(x_train_str_labled,x_train_str_unlabled, x_test_str):
     print("pulizia e trasformazione dell'xtest avvenuta\ntempo impiegato: "+str(end-start)+" secondi\n")
     return x_train_vec, x_test_vec, vect
 
-def dimensionality_reductionKB(xtrain,ytrain, xtest, percentage=0.9):
+def dimensionality_reductionKB(xtrain,ytrain, xtest, percentage=0.85):
 
     print("inizio riduzione...")
     start = time.time()
