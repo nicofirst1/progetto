@@ -50,10 +50,6 @@ def plot_chi2(xtrain_vec, ytrain_vec, trans):
 
 
 
-
-
-
-
 def plot_top_n_words(trans, n, reverse=True):
     """Questa funzione prende in input 3 parametri, un trasformatore, un intero (si consiglia sotto i 50) e un boolean.
     La sua funzione è quella di plottare le n parole con punteggio piu altro (o piu basso dipende da reverse)"""

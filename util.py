@@ -3,7 +3,7 @@ import numpy as np
 import hickle as hkl
 
 
-from Preprocessing import TEST_DATASET
+from Preprocessing import TEST_DATASET, string2vecTFIDF, dimensionality_reductionKB
 
 
 def scoring(prediction):
@@ -21,13 +21,13 @@ def polish_tfidf_kbest(train_set_labled,train_set_unlabled,test_set):
     print("inizio trasformazione da stringa  a vettore......")
 
     # trasformo da stringhe a vettori
-    xtrain_vec, xtest_vec, junk = string2vecTFIDF(xtrainL, xtrainU, xtest)
+    xtrain_vec, xtest_vec, vect = string2vecTFIDF(xtrainL, xtrainU, xtest)
 
     print("inizio dimensionality rediction......")
 
     # eseguo una ricerca delle labels migliori
     xtrain_vec, xtest_vec = dimensionality_reductionKB(xtrain_vec, ytrain, xtest_vec, percentage=0.9)
-    return  xtrain_vec, xtest_vec, ytrain
+    return  xtrain_vec, xtest_vec, ytrain, vect
 
 
 
