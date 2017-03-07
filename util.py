@@ -20,7 +20,7 @@ def polish_tfidf_kbest(train_set_labled,train_set_unlabled,test_set):
     # trasformo da stringhe a vettori
     xtrain_vec, xtest_vec, vect = string2vecTFIDF(xtrainL, xtrainU, xtest)
 
-    print("inizio dimensionality rediction......")
+    print("inizio dimensionality reduction......")
 
     # eseguo una ricerca delle labels migliori
     xtrain_vec, xtest_vec = dimensionality_reductionKB(xtrain_vec, ytrain, xtest_vec, percentage=0.9)

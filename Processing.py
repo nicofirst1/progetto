@@ -3,10 +3,12 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.linear_model import SGDClassifier
 from sklearn.naive_bayes import *
 
+from Data_analisys import plot_SGD_vect, plot_forest_vect
 from Preprocessing import string2vecCV
 from util import scoring, polish_tfidf_kbest
 
 TO_PLOT=True
+
 
 
 def forest_classifier(train_set_labled,train_set_unlabled,test_set):
@@ -19,6 +21,9 @@ def forest_classifier(train_set_labled,train_set_unlabled,test_set):
     # inizzializzo il classificatore e inizio il fittaggio
     forest = RandomForestClassifier(n_estimators=300, n_jobs=-1, verbose=1, criterion="entropy")
     forest = forest.fit(xtrain_vec, ytrain)
+
+    if (TO_PLOT):
+        plot_forest_vect(forest)
 
 
     # adesso posso provare a fare la predizione
@@ -34,10 +39,13 @@ def SGD_classifier(train_set_labled,train_set_unlabled,test_set):
 
     print("inizio classificazione......")
 
-
     #inizzializzo il classificatore e inizio il fittaggio
     sgd=SGDClassifier(verbose=1,n_jobs=-1,loss="modified_huber",random_state=4,n_iter=10)
     sgd.fit(xtrain_vec,ytrain)
+
+    if(TO_PLOT):
+        plot_SGD_vect(sgd)
+
 
     print("inizio predizione......")
 

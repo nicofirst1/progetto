@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import time
+from sklearn.linear_model import SGDClassifier
 import numpy as np
 from matplotlib.ticker import FormatStrFormatter
 from sklearn.feature_selection import chi2
@@ -133,6 +134,65 @@ def plot_chi2_vect(xtrain_vec, ytrain_vec):
     # plt.xticks(range(len(d)), d.keys(), rotation=90)
     plt.show()
 
+def plot_forest_vect(forest):
+
+    features=forest.feature_importances_
+    sort = sorted(features)
+    to_plot = enumerate(sort)
+    x, y = zip(*to_plot)
+
+    plt.figure()
+    plt.title("Forest distribution")
+
+    plt.scatter(x, y)
+    plt.show()
+
+
+
+def plot_SGD_top(xtrain_vec,ytrain_vec,xtest_vect,trans):
+
+    #eseguo il chi2
+    print("eseguo il chi2")
+    chi2_res=chi2(xtrain_vec,ytrain_vec)[0]
+    print("finito chi2")
+
+
+    #inizzializzo il classificatore e  fitto
+    sgd = SGDClassifier(verbose=1, n_jobs=-1, loss="modified_huber", random_state=4, n_iter=10)
+    no_nan=np.nan_to_num(chi2_res)
+    sgd.fit(no_nan, ytrain_vec)
+
+
+    to_plot=dict(zip(trans.get_feature_names(),sgd.coef_))
+    sort=sorted(to_plot.items(),key=operator.itemgetter(1),reverse=True)[:20]
+
+    values=[elem[1] for elem in sort]
+    keys=[elem[0] for elem in sort]
+
+    plt.figure()
+    # setto il titolo
+    plt.title("Top 20 features for SDG")
+
+    # plotto i dati
+    plt.bar(range(len(values)), values, align='edge', color="green")
+    plt.xticks([(x + 0.4) for x in range(len(keys))], keys, rotation=90, y=0.8, color="black", size="large")
+
+    plt.show()
+
+
+def plot_SGD_vect(sgd):
+
+    coeff=sgd.coef_[0]
+    sort=sorted(coeff)
+    to_plot=enumerate(sort)
+    x,y=zip(*to_plot)
+
+    plt.figure()
+    plt.title("SGD distribution")
+
+    plt.scatter(x,y)
+    plt.show()
+
 
 def plot_vector(trans):
     """Questa funzione prende in input un trasformatore( TFIDF o countVectorize), ne estrae i valori e li plotta
@@ -171,6 +231,5 @@ def plot_vector(trans):
 
 
     plt.scatter(x,y)
-   # plt.xticks(range(len(d)), d.keys(), rotation=90)
     plt.show()
 
