@@ -9,10 +9,14 @@ from util import *
 #
 
 #
-forest_classifier(TRAIN_DATASET_LABLED,TRAIN_DATASET_UNLABLED,TEST_DATASET)
-# SGD_classifier(TRAIN_DATASET_LABLED,TRAIN_DATASET_UNLABLED,TEST_DATASET)
+#forest_classifier(TRAIN_DATASET_LABLED,TRAIN_DATASET_UNLABLED,TEST_DATASET)
+#SGD_classifier(TRAIN_DATASET_LABLED,TRAIN_DATASET_UNLABLED,TEST_DATASET)
 # #naive_bayes(TRAIN_DATASET_LABLED,TEST_DATASET)
 
 
 # x_train_vec, x_test_vec, vect=string2vecTFIDF(TRAIN_DATASET_LABLED["review"],TRAIN_DATASET_UNLABLED["review"],TEST_DATASET["review"])
 # plot_SGD_top(x_train_vec,TRAIN_DATASET_LABLED["sentiment"],x_test_vec,vect)
+
+#
+xtrain_vec, xtest_vec, ytrain=polish_tfidf_kbest(TRAIN_DATASET_LABLED,TRAIN_DATASET_UNLABLED,TEST_DATASET)
+grid_search_SGD(xtrain_vec,ytrain)

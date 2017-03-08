@@ -25,8 +25,8 @@ def forest_classifier(train_set_labled,train_set_unlabled,test_set):
     if (TO_PLOT):
         plot_forest_vect(forest)
 
-    cross_validation_score(forest,xtest_vec)
-    return
+    # cross_validation_score(forest,xtest_vec)
+    # return
 
     # oob_error = 1 - forest.oob_score_
     # print("oob_error: "+str(oob_error))
@@ -44,7 +44,9 @@ def SGD_classifier(train_set_labled,train_set_unlabled,test_set):
     print("inizio classificazione......")
 
     #inizzializzo il classificatore e inizio il fittaggio
-    sgd=SGDClassifier(verbose=1,n_jobs=-1,loss="modified_huber",random_state=4,n_iter=10)
+    sgd=SGDClassifier(verbose=1,n_jobs=-1,loss="modified_huber",random_state=4,n_iter=10,
+                      shuffle=True)
+
     sgd.fit(xtrain_vec,ytrain)
 
     if(TO_PLOT):
