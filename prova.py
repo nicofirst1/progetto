@@ -1,4 +1,3 @@
-from Data_analisys import plot_SGD_top
 from Preprocessing import TRAIN_DATASET_LABLED, TRAIN_DATASET_UNLABLED
 from Processing import SGD_classifier, forest_classifier
 from util import *

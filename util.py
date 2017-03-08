@@ -1,10 +1,15 @@
 import numpy as np
+from sklearn.model_selection import cross_val_score
 
 from Preprocessing import TEST_DATASET, string2vecTFIDF, dimensionality_reductionKB
 
+def cross_validation_score(model, x):
+    cross_val_score(model,x,y=TEST_DATASET["sentiment"])
+
 
 def scoring(prediction):
-    return np.mean(prediction == TEST_DATASET["sentiment"])
+    pred=str(np.mean(prediction == TEST_DATASET["sentiment"]))
+    print("il risultato della predizione è: "+pred)
 
 def polish_tfidf_kbest(train_set_labled,train_set_unlabled,test_set):
     # faccio le divisioni

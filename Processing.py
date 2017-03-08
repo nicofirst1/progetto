@@ -5,9 +5,9 @@ from sklearn.naive_bayes import *
 
 from Data_analisys import plot_SGD_vect, plot_forest_vect
 from Preprocessing import string2vecCV
-from util import scoring, polish_tfidf_kbest
+from util import scoring, polish_tfidf_kbest, cross_validation_score
 
-TO_PLOT=True
+TO_PLOT=False
 
 
 
@@ -25,12 +25,16 @@ def forest_classifier(train_set_labled,train_set_unlabled,test_set):
     if (TO_PLOT):
         plot_forest_vect(forest)
 
+    cross_validation_score(forest,xtest_vec)
+    return
+
+    # oob_error = 1 - forest.oob_score_
+    # print("oob_error: "+str(oob_error))
 
     # adesso posso provare a fare la predizione
     pred_forest = forest.predict(xtest_vec)
 
-    forest_score = scoring(pred_forest)
-    print(forest_score)
+    scoring(pred_forest)
 
 def SGD_classifier(train_set_labled,train_set_unlabled,test_set):
 
@@ -52,8 +56,7 @@ def SGD_classifier(train_set_labled,train_set_unlabled,test_set):
     # adesso possoa fare la predizione
     pred_sgd = sgd.predict(xtest_vec)
 
-    forest_score = scoring(pred_sgd)
-    print(forest_score)
+    scoring(pred_sgd)
 
 
 
