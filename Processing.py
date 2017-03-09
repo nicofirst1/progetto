@@ -3,11 +3,11 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.linear_model import SGDClassifier
 from sklearn.naive_bayes import *
 
-from Data_analisys import plot_SGD_vect, plot_forest_vect
+from Data_analisys import plot_SGD_vect, plot_forest_vect, plot_SGD_decision
 from Preprocessing import string2vecCV
 from util import scoring, polish_tfidf_kbest, cross_validation_score
 
-TO_PLOT=False
+TO_PLOT=True
 
 
 
@@ -50,7 +50,8 @@ def SGD_classifier(train_set_labled,train_set_unlabled,test_set):
     sgd.fit(xtrain_vec,ytrain)
 
     if(TO_PLOT):
-        plot_SGD_vect(sgd)
+        plot_SGD_decision(sgd,xtrain_vec,ytrain)
+        #plot_SGD_vect(sgd)
 
 
     print("inizio predizione......")
