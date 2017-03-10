@@ -25,9 +25,8 @@ x_train_vec, x_test_vec, vect=string2vecTFIDF(TRAIN_DATASET_LABLED["review"],TRA
 # grid_search_SGD(xtrain_vec,ytrain)
 
 ## PLOTTING LEARNING RATE
-cv = 6
-#sgd=SGDClassifier(verbose=1,n_jobs=-1,loss="modified_huber",random_state=4,n_iter=10,shuffle=True)
-forest = RandomForestClassifier(n_estimators=300, n_jobs=-1, verbose=1, criterion="entropy")
+sgd=SGDClassifier(verbose=1,n_jobs=-1,loss="modified_huber",random_state=4,n_iter=10,shuffle=True)
+#forest = RandomForestClassifier(n_estimators=300, n_jobs=-1, verbose=1, criterion="entropy")
 
-plot=plot_learning_curve(forest,"SGD learning curve",x_train_vec,TRAIN_DATASET_LABLED["sentiment"],cv=cv)
-plot.show()
+#plot_learning_curve(forest,"Forest learning curve",x_train_vec,TRAIN_DATASET_LABLED["sentiment"])
+plot_learning_curve(sgd,"SGD learning curve",x_train_vec,TRAIN_DATASET_LABLED["sentiment"])
