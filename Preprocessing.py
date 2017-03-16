@@ -41,29 +41,6 @@ def sentences_polishing(words_lst):
     return words_lst
 
 
-def string2vecCV(x_train_str, x_test_str=None, max_features=20000):
-    """preso in input due Series (vettori) usa il principio della bag of word per creare un dizionario con le parole del
-    train set e lo trasforma. In seguito trasforma anche il test set (se passato) e ritorna una tupla in cui il primo
-    elemento è il train set vettorializzato e il secondo (sempre se presente) è il test set vettorializzato"""
-
-    # pulisco l'x_test
-    clean_x_train = sentences_polishing(list(x_train_str))
-
-    # inizzializzo un CountVectorize che usa il prpincipio della bag of words per trasformare tutte le frasi del dataset
-    #  in un datased multidimansionale dove ongi parola è rappresentata da un  valore numerico che indica le ripetizioni
-    #  della stessa ll'interno della frase
-    vect = CountVectorizer(analyzer="word", max_features=max_features)
-    x_train_vec = vect.fit_transform(clean_x_train).toarray()
-
-    # se è presente il test set allora lo pulisco, lo trasformo e ritorno la tupla completa
-    if x_test_str is not None:
-        clean_x_test = sentences_polishing(list(x_test_str))
-        x_test_vec = vect.transform(clean_x_test)
-        return x_train_vec, x_test_vec
-    else:  # altrimenti ritporno solo il test set nella tupla
-        return x_train_vec, None
-
-
 def string2vecTFIDF(x_train_str_labled,x_train_str_unlabled, x_test_str):
 
     # pulisco l'x_test uenndo labled e unlabled
