@@ -41,7 +41,7 @@ x_train_vec, x_test_vec, vect=string2vecTFIDF(TRAIN_DATASET_LABLED["review"],TRA
 #l2, hinge, crammer=8914
 #l2,hinge,c=10, =87
 #l2,hinge,c=10, =88528
-#l2,hinge,maxiter=10000, =89184
+#l2,hinge,maxiter=10000, =9184
 
 
 
