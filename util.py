@@ -2,6 +2,8 @@ import numpy as np
 from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import cross_val_score
+from sklearn.svm import LinearSVC
+from sklearn.svm import SVC
 
 from Preprocessing import TEST_DATASET, string2vecTFIDF, dimensionality_reductionKB
 
@@ -34,14 +36,16 @@ def polish_tfidf_kbest(train_set_labled,train_set_unlabled,test_set):
     xtrain_vec, xtest_vec = dimensionality_reductionKB(xtrain_vec, ytrain, xtest_vec, percentage=0.9)
     return  xtrain_vec, xtest_vec, ytrain
 
+def svm_grid(xtrain,ytrain):
+    svm=LinearSVC(verbose=1)
 
-def grid_search_SGD(xtrain,ytrain):
+    param={"C":[10,100]}
+    #"C":[1,10,100],,"probability":[True,False],"shrinking":[True,False],
+     #      "decision_function_shape":["ovo","ovr",None]
 
-    sgd=SGDClassifier(verbose=1,n_jobs=-1,loss="modified_huber",random_state=4,n_iter=10,
-                      shuffle=True)
-    param={"alpha":[0.0001,0.0002,0.00009]
-           }
-    grid=GridSearchCV(sgd,param,error_score=0,verbose=True)
+    grid=GridSearchCV(svm,param,n_jobs=-1,verbose=1,error_score=-1)
     grid.fit(xtrain,ytrain)
-    print(grid.best_params_)
+
+    print(grid.best_estimator_)
     print(grid.best_score_)
+    print(grid.best_params_)
