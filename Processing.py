@@ -1,16 +1,16 @@
 import time
+from os import system
 
 import numpy
-import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import LinearSVC
-from sklearn.svm import SVC
 
-from Data_analisys import  plot_forest_vect, plot_svm_vect
+from Data_analisys import  plot_forest_vect, plot_svm_dataset
 from Preprocessing import TRAIN_DATASET_LABLED, TRAIN_DATASET_UNLABLED, TEST_DATASET
 from util import scoring, polish_tfidf_kbest
 
 TO_PLOT=False
+TO_SAVE=True
 
 def SVC_classifier(train_set_labled,train_set_unlabled,test_set):
     # tratto i dati
@@ -23,13 +23,20 @@ def SVC_classifier(train_set_labled,train_set_unlabled,test_set):
     svc=LinearSVC(verbose= True, penalty="l2",loss="hinge")
     svc=svc.fit(xtrain_vec, ytrain)
     end = time.time()
-    print("fitting avvenuto\ntempo impiegato: " + str(end - start))
+    tot=end-start
+    print("fitting avvenuto\ntempo impiegato: " +str(int(tot/60))+"'"+str(int(tot%60))+"''\n")
+    system('say "Fittaggio di esse vu emme finito"')
+
 
     if (TO_PLOT):
-        plot_svm_vect(svc)
+        plot_svm_dataset(xtrain_vec,ytrain,svc)
+        #plot_svm_vect(svc)
 
-    to_save=svc.coef_
-    numpy.savetxt("svm_coeff.txt",to_save)
+
+    numpy.savetxt("xtrain",xtrain_vec)
+    numpy.savetxt("ytrain",ytrain)
+    return
+
 
 
     pred_forest = svc.predict(xtest_vec)
@@ -59,7 +66,10 @@ def forest_classifier(train_set_labled,train_set_unlabled,test_set):
     forest = RandomForestClassifier(n_estimators=300, n_jobs=-1, verbose=1, criterion="entropy")
     forest = forest.fit(xtrain_vec, ytrain)
     end = time.time()
-    print("fitting avvenuto\ntempo impiegato: " + str(int(end - start)))
+    tot=end-start
+    print("fitting avvenuto\ntempo impiegato: " +str(int(tot/60))+"'"+str(int(tot%60))+"''\n")
+    system('say "Fittaggio di random forest completato"')
+
 
     if (TO_PLOT):
         plot_forest_vect(forest)

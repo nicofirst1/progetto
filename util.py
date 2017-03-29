@@ -1,11 +1,12 @@
+from os import system
+
 import numpy as np
-from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import cross_val_score
 from sklearn.svm import LinearSVC
-from sklearn.svm import SVC
 
 from Preprocessing import TEST_DATASET, string2vecTFIDF, dimensionality_reductionKB
+
 
 def cross_validation_score(model, x):
     scores=cross_val_score(model,x,y=TEST_DATASET["sentiment"])
@@ -13,8 +14,11 @@ def cross_validation_score(model, x):
 
 
 def scoring(prediction):
-    pred=str(np.mean(prediction == TEST_DATASET["sentiment"]))
+    pred=str(np.mean(prediction == TEST_DATASET["sentiment"])*100)
     print("il risultato della predizione è: "+pred)
+    string= "Risultato ottenuto pari a "+pred+" per cento"
+    system('say '+string)
+
 
 def polish_tfidf_kbest(train_set_labled,train_set_unlabled,test_set):
     # faccio le divisioni
@@ -25,16 +29,16 @@ def polish_tfidf_kbest(train_set_labled,train_set_unlabled,test_set):
 
 
 
-    print("inizio trasformazione da stringa  a vettore......")
+    print("inizio trasformazione da stringa a vettore...")
 
     # trasformo da stringhe a vettori
     xtrain_vec, xtest_vec, vect = string2vecTFIDF(xtrainL, xtrainU, xtest)
 
-    print("inizio dimensionality reduction......")
+    print("inizio test del chi2...")
 
     # eseguo una ricerca delle labels migliori
-    xtrain_vec, xtest_vec = dimensionality_reductionKB(xtrain_vec, ytrain, xtest_vec, percentage=0.9)
-    return  xtrain_vec, xtest_vec, ytrain
+    xtrain_vec, xtest_vec = dimensionality_reductionKB(xtrain_vec, ytrain, xtest_vec)
+    return xtrain_vec, xtest_vec, ytrain
 
 def svm_grid(xtrain,ytrain):
     svm=LinearSVC(verbose=1)

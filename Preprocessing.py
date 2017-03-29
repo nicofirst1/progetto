@@ -6,6 +6,7 @@ from gensim.parsing.preprocessing import remove_stopwords, strip_punctuation2, s
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
+from os import system
 
 #apertura e aslvataggio dei vari datasets
 TEST_PATH = os.getcwd()+"/datasets/testDataLabeled.tsv"
@@ -54,7 +55,6 @@ def sentences_polishing(words_lst, what):
     cleaned=lst_len_start-lst_len_end
     print("Puliti "+str(cleaned)+" ("+str(int(cleaned/lst_len_start*100))+"%) chars, per "+what+"\n")
 
-
     return words_lst
 
 def stemming_lemmatization(review):
@@ -70,8 +70,8 @@ def stemming_lemmatization(review):
     words_list=[x for x in words_list if len(x)>2]
 
     #applico lo stemmer e il lemmatizer
-    words_list=[lemmatizer.lemmatize(x) for x in words_list]
     words_list=[stemmer.stem(x) for x in words_list]
+    words_list=[lemmatizer.lemmatize(x) for x in words_list]
 
 
     return " ".join(words_list)
@@ -90,19 +90,32 @@ def string2vecTFIDF(x_train_str_labled,x_train_str_unlabled, x_test_str):
     # inizzializzo un CountVectorize che usa il prpincipio della bag of words per trasformare tutte le frasi del dataset
     #  in un datased multidimansionale dove ongi parola è rappresentata da un  valore numerico che indica le ripetizioni
     #  della stessa ll'interno della frase
-    vect = TfidfVectorizer(min_df=5,max_df=0.80,sublinear_tf = True,max_features = 200000,strip_accents="ascii",
+    vect = TfidfVectorizer(min_df=5,max_df=0.80,sublinear_tf = True,max_features = 85000,strip_accents="ascii",
                            ngram_range=(1,3))
+    """max_features=200000->89184
+    max_features=250000->89108
+    max_features=100000->89348
+    max_features=50000->8916
+    max_features=75000->8928
+    max_features=85000, max_df=0.8->89352
+    max_df=0.9->89352"""
+
+
     vect = vect.fit(clean_x_trainL+clean_x_trainU)
     x_train_vec=vect.transform(clean_x_trainL).toarray()
-    print("train dataset trasformato, creato dizionario con "+str(len(vect.vocabulary_))+" elementi")
+    print("train dataset trasformato, creato dizionario con "+str(len(vect.vocabulary_))+" parole")
 
     # se è presente il test set allora lo pulisco, lo trasformo e ritorno la tupla completa
     clean_x_test = sentences_polishing(list(x_test_str),"XTest")
     x_test_vec = vect.transform(clean_x_test)
 
     end = time.time()
+    tot=end-start
 
-    print("pulizia e trasformazione del test dataset avvenuta\ntempo impiegato: "+str(int(end-start))+" secondi\n")
+    print("pulizia e trasformazione del test dataset avvenuta\ntempo impiegato: "+str(int(tot/60))+"'"+str(int(tot%60))+"''\n")
+    system('say "Pulizia del dataset avvenuta"')
+
+
     return x_train_vec, x_test_vec, vect
 
 def dimensionality_reductionKB(xtrain,ytrain, xtest, percentage=0.85):
@@ -117,7 +130,10 @@ def dimensionality_reductionKB(xtrain,ytrain, xtest, percentage=0.85):
     print("xtrain ridotto!")
     new_xtest=kbest.transform(xtest)
     end = time.time()
+    tot=end-start
 
-    print("xtest ridotto!\ntempo impiegato: "+str(int(end-start))+" secondi\n")
+    print("xtest ridotto!\ntempo impiegato: "+str(int(tot/60))+"'"+str(int(tot%60))+"''\n")
+    system('say "Test del ki quadro completato"')
+
 
     return new_xtrain,new_xtest
