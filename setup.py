@@ -1,6 +1,6 @@
 from setuptools import find_packages,setup
 
-setup(name='Progetto',
+setup(name='Movienator',
       version='0.1dev',
       author="Nicolo' Brandizzi",
       packages=find_packages(exclude=['Debug']),
