@@ -5,9 +5,13 @@ from math import isnan
 
 import matplotlib.pyplot as plt
 import numpy as np
+from os import system
 from sklearn.feature_selection import chi2
 from sklearn.model_selection import learning_curve
+from sklearn.tree import export_graphviz
 
+
+# Todo: spiega grafici, come vengono ottenuti
 
 ## Generic
 def plot_learning_curve(estimator, title, X, y, ylim=None, cv=None,
@@ -86,6 +90,7 @@ def plot_learning_curve(estimator, title, X, y, ylim=None, cv=None,
     plt.imsave()
     return plt
 
+
 ##chi2
 def plot_chi2_top(xtrain_vec, ytrain_vec, trans):
     print("calcolo del chi2...")
@@ -125,6 +130,7 @@ def plot_chi2_top(xtrain_vec, ytrain_vec, trans):
     plt.text(0, mean, "mean: " + str(mean), color="red", size="large")
 
     plt.show()
+
 
 def plot_chi2_vect(xtrain_vec, ytrain_vec):
     print("calcolo del chi2...")
@@ -206,6 +212,7 @@ def plot_vector(trans):
     plt.scatter(x, y)
     plt.show()
 
+
 def plot_top_n_words(trans, n, reverse=True):
     """Questa funzione prende in input 3 parametri, un trasformatore, un intero (si consiglia sotto i 50) e un boolean.
     La sua funzione è quella di plottare le n parole con punteggio piu altro (o piu basso dipende da reverse)"""
@@ -245,6 +252,7 @@ def plot_top_n_words(trans, n, reverse=True):
 
     plt.show()
 
+
 ##Forest
 
 def plot_forest_vect(forest):
@@ -258,6 +266,48 @@ def plot_forest_vect(forest):
 
     plt.scatter(x, y)
     plt.show()
+
+
+def plot_top_forest(forest, names, n):
+    features = forest.feature_importances_
+    zipped = zip(features, names)
+
+    sort = sorted(zipped, key=lambda x: x[1])
+    print(sort[:10])
+    print(sort[-10:])
+
+    keys = [i[1] for i in sort]
+    values = [int(i[0]) for i in sort]
+
+    # calcolo la media dei valori
+    mean = 0
+    for elem in values:
+        mean += elem
+
+    mean /= len(values)
+
+    plt.figure()
+    # setto il titolo
+    plt.title("Top " + str(n) + " features for forest")
+
+    # plotto i dati
+    plt.bar(range(len(sort)), values, align='edge', color="green")
+    plt.xticks([(x + 0.4) for x in range(len(sort))], keys, rotation=90, y=0.8, color="black", size="large")
+
+    # plotto la media
+    plt.axhline(y=mean, c="red")
+    plt.text(0, mean, "mean: " + str(mean), color="red", size="large")
+
+    plt.show()
+
+
+def plot_trees(trees, columns_names):
+    for tree in trees:
+        export_graphviz(tree,
+                        feature_names=columns_names,
+                        filled=True,
+                        rounded=True)
+    system('dot -Tpng tree.dot -o tree.png')
 
 
 ##SVM
@@ -274,16 +324,15 @@ def plot_svm_vect(svc):
     plt.scatter(x, y)
     plt.show()
 
-def plot_svm_dataset(xtrain,ytrain,svm):
 
+def plot_svm_dataset(xtrain, ytrain, svm):
     h = .02  # step size in the mesh
-    X=xtrain[:, :2]
+    X = xtrain[:, :2]
     # create a mesh to plot in
-    x_min, x_max = X[:, 0].min() - 1,  X[:, 0].max() + 1
-    y_min, y_max =  X[:, 1].min() - 1,  X[:, 1].max() + 1
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
     xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
                          np.arange(y_min, y_max, h))
-
 
     # Plot the decision boundary. For that, we will assign a color to each
     # point in the mesh [x_min, x_max]x[y_min, y_max].
@@ -297,7 +346,7 @@ def plot_svm_dataset(xtrain,ytrain,svm):
     plt.contourf(xx, yy, Z, cmap=plt.cm.coolwarm, alpha=0.8)
 
     # Plot also the training points
-    plt.scatter( X[:, 0],  X[:, 1], c=ytrain, cmap=plt.cm.coolwarm)
+    plt.scatter(X[:, 0], X[:, 1], c=ytrain, cmap=plt.cm.coolwarm)
     plt.xlabel('Sepal length')
     plt.ylabel('Sepal width')
     plt.xlim(xx.min(), xx.max())
@@ -305,5 +354,36 @@ def plot_svm_dataset(xtrain,ytrain,svm):
     plt.xticks(())
     plt.yticks(())
     plt.title("Svm dataset")
+
+    plt.show()
+
+
+def plot_top_svm(svm, names, n):
+    features = svm.coef_
+    zipped = zip(features, names)
+
+    sort = sorted(zipped, key=lambda x: x[0])[-n:]
+
+    keys = [i[1] for i in sort]
+    values = [int(i[0]) for i in sort]
+
+    # calcolo la media dei valori
+    mean = 0
+    for elem in values:
+        mean += elem
+
+    mean /= len(values)
+
+    plt.figure()
+    # setto il titolo
+    plt.title("Top " + str(n) + " features for forest")
+
+    # plotto i dati
+    plt.bar(range(len(sort)), values, align='edge', color="green")
+    plt.xticks([(x + 0.4) for x in range(len(sort))], keys, rotation=90, y=0.8, color="black", size="large")
+
+    # plotto la media
+    plt.axhline(y=mean, c="red")
+    plt.text(0, mean, "mean: " + str(mean), color="red", size="large")
 
     plt.show()
